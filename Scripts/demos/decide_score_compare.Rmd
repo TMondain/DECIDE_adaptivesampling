@@ -59,7 +59,7 @@ for(i in 1:length(names)){
   
   # quantile range
   qr <- list.files(model_locs, 
-                   pattern = paste0(names[i], "_", pseudoabs, "_rangeensemblequantiles.grd"),
+                   pattern = paste0(names[i], "_", pseudoabs, "_weightedvariationensemble.grd"),
                    full.names = TRUE)
   
   qrnge <- raster::stack(qr)
@@ -86,8 +86,8 @@ for(i in 1:length(names)){
 ```{r loc_dist}
 
 # location = c(-2.730696, 54.026759) # quernmore
-location = c(-2.860564, 56.014902) # aberlady
-# location = c(-1.110557, 51.602436) # wallingford
+# location = c(-2.860564, 56.014902) # aberlady
+location = c(-1.110557, 51.602436) # wallingford
 
 distance = 5000
 
@@ -165,6 +165,14 @@ names(var) <- names(out_cropped)
 
 ```
 
+## plot all presence and variation layers
+```{r plot_p_u, warning = F}
+
+plot(preds, col = viridis(50), bty="n", main = '', legend = F, axes = F, box = F)
+plot(var, col = viridis(50), bty="n", main = '', legend = F, axes = F, box = F)
+
+
+```
 
 ## plot relationship between presence and variation
 
@@ -198,6 +206,7 @@ plot_rel <- function(pred_lay, var_lay, dec) {
 plot_rel(pred_lay = preds, 
          var_lay = var) +
   labs(x='Probability of presence', y = 'Variation') +
+  ylim(0,0.18) +
   theme_bw()
 
 
@@ -223,7 +232,8 @@ plot_rel(pred_lay = preds,
 
 There are multiple ways of getting DECIDE scores. There are two steps to this process.
 
-First step, create a DECIDE score for each species. So far, we have been doing this in three ways:
+First step, create a DECIDE score for each species. So far, we have been doing this in four ways:
+* $Variation$$
 
 * $$ProbabilityOfPresence*Variation$$ 
 
@@ -271,6 +281,21 @@ for(r in 1:4){
   plot(mn_wt_var, main = paste0(names(dec_fls)[r], ', weighted by var'), col=viridis(50))
   plot(mn_wt_prob, main = paste0(names(dec_fls)[r], ', weighted by prob'), col=viridis(50))
   plot(q90, main = paste0(names(dec_fls)[r], ', 0.9 quantile'), col=viridis(50))
+
+  
+}
+
+for(r in 1:4){
+ 
+  mn <- mean(dec_fls[[r]])
+  mn_wt_prob <- raster::weighted.mean(dec_fls[[r]], preds)
+  mn_wt_var <- raster::weighted.mean(dec_fls[[r]], var)
+  q90 <- calc(dec_fls[[r]], fun=function(x) quantile(x, .9, na.rm=TRUE))
+  
+  hist(mn, main = paste0(names(dec_fls)[r], ', unweighted mean'), col=viridis(50), xlim = c(0,0.14))
+  hist(mn_wt_var, main = paste0(names(dec_fls)[r], ', weighted by var'), col=viridis(50), xlim = c(0,0.14))
+  hist(mn_wt_prob, main = paste0(names(dec_fls)[r], ', weighted by prob'), col=viridis(50), xlim = c(0,0.14))
+  hist(q90, main = paste0(names(dec_fls)[r], ', 0.9 quantile'), col=viridis(50), xlim = c(0,0.14))
 
   
 }

@@ -96,11 +96,11 @@ for(i in 1:length(names)){
 ```{r loc_dist}
 
 # location = c(-0.385843, 51.289680) # bookham common
-location = c(-2.860564, 56.014902) # aberlady
+# location = c(-2.860564, 56.014902) # aberlady
 # location = c(-1.503560, 54.141389) # sharow
 # location = c(-2.247979, 50.632404) # lulworth cove
 # location = c(-1.461817, 54.440435) # great smeaton
-# location = c(-1.110557, 51.602436) # wallingford
+location = c(-1.110557, 51.602436) # wallingford
 
 
 distance = 5000
@@ -211,7 +211,7 @@ system.time(records <- filter_distance(obj = st_dfm,
                                        method  = 'buffer'))
 
 plot(dec_crop, col = viridis(50))
-points(x = dfm$lon, y = dfm$lat, col = 'red')
+# points(x = dfm$lon, y = dfm$lat, col = 'red')
 plot(st_geometry(records), add = T, pch = 20)
 
 
