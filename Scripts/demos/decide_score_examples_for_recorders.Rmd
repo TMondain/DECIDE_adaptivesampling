@@ -162,7 +162,7 @@ names(var) <- names(out_cropped)
 
 ```{r, message = F, warning = F}
 
-register_google(key = "AIzaSyDzfFo6Jq1g65BauVhLL-SexOYS5OuH-kA")
+register_google(key = "")
 
 gmap <- get_map(location = location, zoom = 12)
 
